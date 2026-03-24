@@ -1,0 +1,42 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}Create Account - Ivy Intelligence{% endblock %}
+
+{% block content %}
+<div class="container my-5 py-2">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-warning bg-opacity-10 rounded-circle mb-3" style="width: 70px; height: 70px;">
+                            <i class="bi bi-rocket-takeoff-fill fs-2" style="color: var(--ivy-accent);"></i>
+                        </div>
+                        <h2 class="fw-bold" style="color: var(--ivy-blue);">{% trans "Join Ivy Intelligence" %}</h2>
+                        <p class="text-muted">Launch your academic career by tracking elite opportunities.</p>
+                    </div>
+
+                    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                        {% endif %}
+                        <div class="d-grid mt-4 pt-2">
+                            <button class="btn btn-warning btn-lg rounded-pill fw-bold text-dark" style="background-color: var(--ivy-accent); border-color: var(--ivy-accent);" type="submit">{% trans "Create Account" %}</button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4 pt-4 border-top">
+                        <p class="text-muted mb-0">Already have an account? 
+                            <a href="{{ login_url }}" class="text-decoration-none fw-bold" style="color: var(--ivy-blue);">Sign In</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

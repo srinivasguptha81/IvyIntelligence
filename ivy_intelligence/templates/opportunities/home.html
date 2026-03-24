@@ -1,0 +1,139 @@
+{% extends 'base/base.html' %}
+{% block title %}Ivy Intelligence — Find Ivy League Opportunities{% endblock %}
+{% block content %}
+
+<!-- Hero Section -->
+<section style="background: linear-gradient(135deg, #1a3c6e 0%, #2e6dad 100%); color: white; padding: 5rem 0;">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Never Miss an Ivy League Opportunity</h1>
+        <p class="lead mb-4" style="color:rgba(255,255,255,.85); max-width:600px; margin: 0 auto 2rem;">
+            AI-powered real-time tracking of internships, hackathons, research programs, scholarships, and conferences from Harvard, MIT, Yale, Stanford, and more.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn btn-warning btn-lg px-4 fw-bold">
+                <i class="bi bi-grid me-2"></i>Go to Dashboard
+            </a>
+            {% else %}
+            <a href="{% url 'account_signup' %}" class="btn btn-warning btn-lg px-4 fw-bold">
+                <i class="bi bi-rocket-takeoff me-2"></i>Get Started Free
+            </a>
+            {% endif %}
+            <a href="{% url 'opportunity_list' %}" class="btn btn-outline-light btn-lg px-4">
+                <i class="bi bi-search me-2"></i>Browse Opportunities
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="row mt-5 g-4 justify-content-center">
+            <div class="col-6 col-md-3">
+                <div style="background:rgba(255,255,255,.1); border-radius:12px; padding:1.5rem;">
+                    <div style="font-size:2rem; font-weight:700;">{{ stats.total }}+</div>
+                    <div style="font-size:.9rem; opacity:.8;">Active Opportunities</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div style="background:rgba(255,255,255,.1); border-radius:12px; padding:1.5rem;">
+                    <div style="font-size:2rem; font-weight:700;">{{ stats.universities }}+</div>
+                    <div style="font-size:.9rem; opacity:.8;">Universities Tracked</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div style="background:rgba(255,255,255,.1); border-radius:12px; padding:1.5rem;">
+                    <div style="font-size:2rem; font-weight:700;">{{ stats.domains }}</div>
+                    <div style="font-size:.9rem; opacity:.8;">Domains Covered</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div style="background:rgba(255,255,255,.1); border-radius:12px; padding:1.5rem;">
+                    <div style="font-size:2rem; font-weight:700;">AI</div>
+                    <div style="font-size:.9rem; opacity:.8;">Domain Classifier</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5" style="color: var(--ivy-blue);">How Ivy Intelligence Works</h2>
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                <div style="width:64px; height:64px; background:#dbeafe; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem;">🕷️</div>
+                <h5 class="fw-bold">1. Real-Time Scraping</h5>
+                <p class="text-muted small">Our system monitors Ivy League university websites every 6 hours using web scraping + change detection.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div style="width:64px; height:64px; background:#dcfce7; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem;">🤖</div>
+                <h5 class="fw-bold">2. AI Classification</h5>
+                <p class="text-muted small">A TF-IDF + Logistic Regression classifier assigns each opportunity to the right domain automatically.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div style="width:64px; height:64px; background:#fce7f3; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem;">🎯</div>
+                <h5 class="fw-bold">3. Personalized Feed</h5>
+                <p class="text-muted small">You see only the opportunities matching your selected domains, skills, and academic profile.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div style="width:64px; height:64px; background:#fef3c7; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem;">🏆</div>
+                <h5 class="fw-bold">4. InCoScore Ranking</h5>
+                <p class="text-muted small">Your InCoScore (Intelligent Competency Score) ranks you among peers based on verified achievements.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Opportunities -->
+{% if featured %}
+<section class="py-5" style="background: white;">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0" style="color: var(--ivy-blue);">Latest Opportunities</h2>
+            <a href="{% url 'opportunity_list' %}" class="btn btn-outline-primary">View All</a>
+        </div>
+        <div class="row g-4">
+            {% for opp in featured %}
+            <div class="col-md-4">
+                <div class="card h-100 p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="domain-badge domain-{{ opp.domain }}">{{ opp.get_domain_display }}</span>
+                        <small class="text-muted">{{ opp.get_university_display }}</small>
+                    </div>
+                    <h6 class="fw-bold">{{ opp.title|truncatewords:12 }}</h6>
+                    <p class="text-muted small">{{ opp.description|truncatewords:20 }}</p>
+                    <div class="mt-auto">
+                        <span class="badge bg-light text-dark me-1">{{ opp.get_opportunity_type_display }}</span>
+                        {% if opp.deadline %}
+                        <small class="text-danger"><i class="bi bi-calendar me-1"></i>{{ opp.deadline }}</small>
+                        {% endif %}
+                        <div class="mt-2">
+                            <a href="{% url 'opportunity_detail' opp.pk %}" class="btn btn-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA -->
+<section class="py-5 text-center">
+    <div class="container">
+        <h3 class="fw-bold mb-3" style="color: var(--ivy-blue);">Ready to build your academic career?</h3>
+        {% if user.is_authenticated %}
+        <p class="text-muted mb-4">Discover and apply for top opportunities tailored to your profile.</p>
+        <a href="{% url 'opportunity_list' %}" class="btn btn-primary btn-lg px-5">
+            <i class="bi bi-search me-2"></i>Explore Opportunities
+        </a>
+        {% else %}
+        <p class="text-muted mb-4">Join students already using Ivy Intelligence to discover and apply for top opportunities.</p>
+        <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg px-5">
+            <i class="bi bi-person-plus me-2"></i>Create Your Profile
+        </a>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}
